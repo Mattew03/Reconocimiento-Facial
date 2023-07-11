@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Página de inicio de sesión con reconocimiento facial</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 50px;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    #videoFeed {
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      max-width: 100%;
+      max-height: 400px;
+    }
+
+    #options {
+      margin-top: 50px;
+    }
+
+    #options a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      margin-right: 10px;
+    }
+
+    #errorMessage {
+      color: red;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    #modifyOptions {
+      margin-top: 50px;
+    }
+
+    #modifyOptions button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Página de inicio de sesión con reconocimiento facial</h1>
+  <div class="container">
+    <video id="videoFeed" autoplay></video>
+    <button id="startButton">Iniciar reconocimiento facial</button>
+    <div id="errorMessage" style="display: none;">Usuario incorrecto</div>
+  </div>
+
+  <div id="options" style="display: none;">
+    <h2>Selecciona una opción:</h2>
+    <a href="saew.html" id="calendarOption">Saew</a>
+    <a href="spotify.html" id="spotifyOption">Spotify</a>
+  </div>
+
+  <div id="modifyOptions" style="display: none;">
+    <h2>Modificar opciones:</h2>
+    <button id="modifyCalendarButton">Modificar Saew</button>
+    <button id="modifySpotifyButton">Modificar Spotify</button>
+  </div>
+
+  <script>
+    // Acceder al video de la cámara del dispositivo
+    var video = document.getElementById('videoFeed');
+
+    // Verificar si el navegador es compatible con la API de getUserMedia
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          // Mostrar el video de la cámara en el elemento de video
+          video.srcObject = stream;
+        })
+        .catch(function(error) {
+          console.error('Error al acceder a la cámara:', error);
+        });
+    }
+
+    // Obtener una captura de pantalla del video cuando se hace clic en el botón de inicio
+    var startButton = document.getElementById('startButton');
+    startButton.addEventListener('click', function() {
+      // Crear un lienzo para dibujar la captura de pantalla
+      var canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      var context = canvas.getContext('2d');
+
+      // Dibujar la captura de pantalla en el lienzo
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Simular el reconocimiento facial
+      var imageData = canvas.toDataURL('image/jpeg');
+      var detected = simulateFacialRecognition(imageData); // Función simulada de reconocimiento facial
+
+      // Verificar si se detectó un rostro
+      if (detected) {
+        document.getElementById('options').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+        video.style.display = 'none';
+        startButton.style.display = 'none';
+      } else {
+        document.getElementById('errorMessage').style.display = 'block';
+      }
+    });
+
+    // Función simulada de reconocimiento facial
+    function simulateFacialRecognition(imageData) {
+      // Aquí puedes agregar tu lógica de reconocimiento facial utilizando bibliotecas y algoritmos adecuados
+      // Como esto es solo una simulación, siempre devolvemos un resultado aleatorio
+      return Math.random() >= 0.5;
+    }
+
+    // Modificar opciones de Saew
+    var modifyCalendarButton = document.getElementById('modifyCalendarButton');
+    modifyCalendarButton.addEventListener('click', function() {
+      // Llamada a la API ficticia para modificar las opciones de Saew
+      apiCall('calendar')
+        .then(function(response) {
+          console.log('Opciones de Saew modificadas:', response);
+        })
+        .catch(function(error) {
+          console.error('Error al modificar las opciones de Saew:', error);
+        });
+    });
+
+    // Modificar opciones de Spotify
+    var modifySpotifyButton = document.getElementById('modifySpotifyButton');
+    modifySpotifyButton.addEventListener('click', function() {
+      // Llamada a la API ficticia para modificar las opciones de Spotify
+      apiCall('spotify')
+        .then(function(response) {
+          console.log('Opciones de Spotify modificadas:', response);
+        })
+        .catch(function(error) {
+          console.error('Error al modificar las opciones de Spotify:', error);
+        });
+    });
+
+    // Función simulada de llamada a la API
+    function apiCall(option) {
+      // Aquí puedes realizar una llamada real a tu API para modificar las opciones según la opción seleccionada
+      // En este ejemplo, simplemente simulamos una llamada con una promesa que se resuelve después de 1 segundo
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          resolve('Opciones modificadas correctamente para ' + option);
+        }, 1000);
+      });
+    }
+  </script>
+</body>
+</html>
